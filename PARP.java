@@ -60,8 +60,8 @@ public class PARP{
 					int atr_2 = Integer.parseInt(linea.split(" ")[2]);
 					int atr_3 = Integer.parseInt(linea.split(" ")[3]);
 					// Agregar Aristas a nodos correspondientes
-					g.nodos.get(atr_0).agregar_vecino(atr_1,atr_2,atr_3);	
-					g.nodos.get(atr_1).agregar_vecino(atr_0,atr_2,atr_3);	
+					g.nodos.get(atr_0).agregar_vecino(atr_0,atr_1,atr_2,atr_3);	
+					g.nodos.get(atr_1).agregar_vecino(atr_1,atr_0,atr_2,atr_3);	
 				} // fin if contains number
 			} // fin while readline
 		} // fin try
@@ -108,23 +108,49 @@ public class PARP{
 		return g2;
 	} // fin funcion BFS
 
-  public static Grafo Prim(Grafo g){
-      Grafo h = new Grafo();
-      Nodo aux = g.nodos.get(1);
-      Nodo i = new Nodo(1);
-      g.agregar_nodo(1,i);
+	public static Grafo Prim(Grafo g){
+		Grafo h = new Grafo();
+		Nodo aux = g.nodos.get(1);
+		Nodo i = new Nodo(1);
+		h.agregar_nodo(1,i);
+		int k;
+		Arista a;
 
-      ArrayList<Arista> aristas = new ArrayList<Arista>();
-      Iterator<Arista> it = aux.vecinos.iterator();
-      while(it.hasNext()){
-      		//System.out.println(it);
-          Arista a = it.next();
-          a.imprimir();
-          aristas.add(a);
-      }
-      h.imprimir();
-      return h;
-  }
+		ArrayList<Arista> aristas = new ArrayList<Arista>();
+		Iterator<Arista> it = aux.vecinos.iterator();
+		while(it.hasNext()){
+			a = it.next();
+			aristas.add(a);
+		}
+		a=aristas.get(1);
+		while( aristas.size()!=0 ){
+			k=0;
+			for(Integer j=0;j<aristas.size();j++){
+				if ((aristas.get(j).beneficio-aristas.get(j).costo)> (a.beneficio-a.costo)){
+					a=aristas.get(j);
+					k=j;
+				}
+			}
+			if (h.nodos.containsKey(a.id_v)){
+				aristas.remove(k);
+			}
+			else{
+				Nodo nuevo= new Nodo(a.id_v);
+				h.agregar_nodo(nuevo.id,nuevo);
+				aux=h.nodos.get(a.id);
+				aux.agregar_arista(a);
+
+				aux= g.nodos.get(a.id_v);
+				it = aux.vecinos.iterator();
+
+				while(it.hasNext()){
+					a = it.next();
+					aristas.add(a);
+				}
+			}
+		}
+		return h;
+		}
 
 	public static void main(String[] args){
 		// Armar Grafo
@@ -133,6 +159,7 @@ public class PARP{
 		// Hacer BFS partiendo de d para hallar componente conexa
 		Grafo g_conexo = BFS(g);
 		Grafo g_conexo2 = Prim(g_conexo);
+		g_conexo2.imprimir();
 		// Realizar Prim para conseguir arbol de mayor beneficio
 	} // fin funcion main
 } // fin class PARP

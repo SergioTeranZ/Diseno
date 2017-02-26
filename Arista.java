@@ -1,9 +1,11 @@
 public class Arista {
+    public int id;
     public int id_v;
     public int costo;
     public int beneficio;
     
-    public Arista(int v, int c, int b) {
+    public Arista(int o, int v, int c, int b) {
+        id = o;
         id_v = v;
         costo = c;
         beneficio = b;
