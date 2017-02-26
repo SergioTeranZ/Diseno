@@ -29,27 +29,17 @@ public class PARP{
 	//         -insertamos w dentro de la cola Q
 
 	//-Realizar Prim para conseguir arbol de mayor beneficio
-	//  -Inicialización: sólo el nodo 1 se encuentra en B
-	//  -Distmin[1]=-1
-	//  -T contendrá los arcos del árbol de extensión mínima 
-	//  -T =NULL 
-	//  -para i=2 hasta n hacer 
-	//  -  más_próximo[i] = 1 
-	//  -  distmin[i] = L[i,1]
-	//  -para i=1 hasta n-1 hacer 
-	//  -  min=infinito
-	//  -    para j=2 hasta n hacer 
-	//  -      si 0 <= distmin[j] < min entonces: 
-	//  -        min = distmin[j] 
-	//  -        k = j
-	//  -    T = T union {{mas_próximo[k], k }} 
-	//  -    distmin [k]= -1 'se añade k a B
-	//  -
-	//  -    para j=2 hasta n hacer 
-	//  -      si L[j,k] < distmin[j] entonces 
-	//  -        distmin[j] = L[j,k] 
-	//  -        más_próximo[j] = k
-	//  -devolver T
+	//	-inicializamos todos los nodos del grafo. 
+	//		-La distancia la ponemos a infinito
+	//		-Menos la del nodo raiz
+	//		-el padre de cada nodo a NULL
+	//	-encolamos todos los nodos del grafo
+	//	-Mientras cola != 0:
+	//		-Se extrae el nodo que tiene distancia mínima
+	//		-Para v en vecinos[u]:
+	//			-Si ((v ∈ cola) && (distancia[v] < peso(u, v)):
+	//				-El padre de v es u
+	//				-Se actualiza la distancia de v con su beneficio
 	
 	//-Buscar camino en el arbol con mayor beneficio (Camino A)
 	
@@ -143,169 +133,33 @@ public class PARP{
 		return g2;
 	} // fin funcion BFS
 
-//ALICIA
-/*	public static Grafo Prim(Grafo g){
-		Grafo h = new Grafo();
-		Nodo aux = g.nodos.get(1);
-		Nodo i = new Nodo(1);
-		h.agregar_nodo(1,i);
-		int k;
-		Arista a;
-
-		ArrayList<Arista> aristas = new ArrayList<Arista>();
-		Iterator<Arista> it = aux.vecinos.iterator();
-		while(it.hasNext()){
-			a = it.next();
-			aristas.add(a);
-		}
-		a=aristas.get(0);
-		while( aristas.size()!=0 ){
-			k=0;
-			for(Integer j=0;j<aristas.size();j++){
-				if ((aristas.get(j).beneficio-aristas.get(j).costo)> (a.beneficio-a.costo)){
-					a=aristas.get(j);
-					k=j;
-				}
-			}
-			System.out.println(h.nodos);
-			if (h.nodos.containsKey(a.id_v)){
-				aristas.remove(k);
-
-				for (Arista ai:aristas){
-					System.out.print("("+ai.id+","+ai.id_v+")");
-				}				
-				System.out.println();
-			}
-			else{
-				Nodo nuevo= new Nodo(a.id_v);
-				h.agregar_nodo(nuevo.id,nuevo);
-				aux=h.nodos.get(a.id);
-				aux.agregar_arista(a);
-
-				aux= g.nodos.get(a.id_v);
-				it = aux.vecinos.iterator();
-
-				while(it.hasNext()){
-					a = it.next();
-					aristas.add(a);
-				}
-				for (Arista ai:aristas){
-					System.out.println(ai.id+","+ai.id_v);
-				}
-			}
-		}
-		return h;
-		}
-*/
-
-//SERGIO 1
-/*	public static Grafo Prim(Grafo g){
-		//	-Se crean listas de nodos procesados y no procesados
-		Grafo arbol = new Grafo();
-  	HashMap<Integer,ArrayList<Tupla>> a_visitadas = new HashMap<Integer,ArrayList<Tupla>>();
-		Tupla mejor_t = new Tupla(-100000,-100000);
-		int mejor_c = 0;
-		int mejor_b = 0;
-		
-		//	-El nodo visitado es 1
-		Nodo visitado = g.nodos.get(1);
-		
-		//	-Mientras haya nodos sin visitar:
-		while(g.sinVisitar()){
-			//	-Se agrega el nodo al arbol	
-			//		-Se crea un nuevo nodo con lo valor del nodo visitado
-			Nodo n_i = new Nodo(visitado.id);
-			arbol.agregar_nodo(n_i.id,n_i);
-						
-			//	-Se agrega a visitadas las aristas adyacentes
-			ArrayList<Tupla> adyacentes = new ArrayList<Tupla>();
-			
-			for (Arista a_i : visitado.vecinos ){
-				
-				if(g.nodos.get(a_i.id_v).visitado != true){
-					
-					Tupla t = new Tupla(a_i.id_v,a_i.beneficio());
-					System.out.println("["+t.id+","+t.b+"]");
-					
-					adyacentes.add(t);
-				
-					//	-Se elige entre las aristas visitadas la de mayor beneficio
-					if(mejor_t.b < t.b){
-						mejor_t = t;
-						mejor_c = a_i.costo;
-						mejor_b = a_i.beneficio;
-					}
-				}
-			} // fin for a_i
-			a_visitadas.put(visitado.id,adyacentes);
-			//adyacentes.clear();
-			//	-Se Agrega la arista al arbol
-			//		-Se crea el nodo vecino
-			Arista nuevo = new Arista(mejor_t.id,mejor_c,mejor_b);
-			
-			//		-Se agrega el nodo vecino a la lista de vecinos del nodo visitado
-			arbol.nodos.get(n_i.id).vecinos.add(nuevo);
-			
-			//	-Se marca como visitado el nodo
-			g.visitar(visitado.id);
-			System.out.println(visitado.id+"-"+visitado.visitado);
-			//	-Se visita el nodo recien agregado
-			visitado = g.nodos.get(mejor_t.id);
-			System.out.println(visitado.id+"-"+visitado.visitado);
-				
-			//	-Se elimina de visitadas la arista agregada al arbol
-
-			// Se busca la proxima mejor arista
-			for (Map.Entry<Integer,ArrayList<Tupla>> entry : a_visitadas.entrySet()) {
-				int key = entry.getKey();
-				ArrayList<Tupla> value = entry.getValue();
-				System.out.println("k:"+key);
-				for(Tupla t:value){
-					System.out.println("("+t.id+","+t.b+")");
-					if( t.b   ){
-						//visitado = 
-					}
-				}
+	public static HashMap<Integer,Nodo> Prim(Grafo g){
 
 
-			}
-			mejor_t.id = -100000;
-			mejor_t.b = -100000;
-			arbol.imprimir();
-		} // fin while g.sinVisitar
-		return arbol;
-	}*/
-
-	public static Grafo Prim(Grafo g){
-    // 	inicializamos todos los nodos del grafo. La distancia la ponemos a infinito y el padre de cada nodo a NULL
-    // 	for each u ∈ V[G] do
   	HashMap<Integer,Integer> distancia = new HashMap<Integer,Integer>();
   	HashMap<Integer,Nodo> padre = new HashMap<Integer,Nodo>();
   	HashMap<Integer,Nodo> cola = new HashMap<Integer,Nodo>();
     Nodo u = new Nodo(-1);
 
+		//	-inicializamos todos los nodos del grafo. 
     for (Map.Entry<Integer, Nodo> uv : g.nodos.entrySet()) {
+			//	-La distancia la ponemos a infinito
     	if(uv.getValue().id == 1){
-    		// 	distancia[s]=0
+				//	-Menos la del nodo raiz
 				distancia.put(uv.getValue().id,0);
     	}else{
-    		// distancia[u] = INFINITO
     		distancia.put(uv.getValue().id,-10000000);
     	}
-    	// padre[u] = NULL
+			//	-el padre de cada nodo a NULL
     	padre.put(uv.getValue().id,u);
-    	// 	encolamos todos los nodos del grafo
-   		// 	Encolar(cola, V[G])
-    	//Nodo n = new Nodo(uv.getValue().id);
+			//	-encolamos todos los nodos del grafo;
     	cola.put(uv.getKey(),uv.getValue());
     }
-    // 	while cola != 0 do
+		//	-Mientras cola != 0:
     while(!cola.isEmpty()){
+			//	-Se extrae el nodo que tiene distancia mínima
     	int mayor = -10000000;
-		  // 		OJO: Se extrae el nodo que tiene distancia mínima y se conserva la condición de Cola de prioridad
 		  for(Map.Entry<Integer, Integer> i : distancia.entrySet()){
-		  	// 		u = extraer_minimo(cola)
-		  	// 		u = extraer_maximo(cola) <MODIFICADO>
 		  	if (mayor < i.getValue()){
 		  		mayor = i.getValue();
 		  		u = cola.get(i.getKey());
@@ -313,24 +167,18 @@ public class PARP{
 		  }
 		  cola.remove(u.id);
 		  distancia.remove(u.id);
-	    // 		for v ∈ adyacencia[u] do
+			//	-Para v en vecinos[u]:
     	for(Arista v : u.vecinos){
-		  	// 			if ((v ∈ cola) && (distancia[v] > peso(u, v)) do
-		  	// 			if ((v ∈ cola) && (distancia[v] < peso(u, v)) do <MODIFICADO>
+				//	-Si ((v ∈ cola) && (distancia[v] < peso(u, v)):
 		 		if( (cola.containsKey(v.id_v)) && (distancia.get(v.id_v) < v.beneficio()) ){
-		 			//  			padre[v] = u
+					//	-El padre de v es u
     			padre.put(v.id_v,u);
-					//    		distancia[v] = peso(u, v)
+					//	-Se actualiza la distancia de v con su beneficio
     			distancia.put(v.id_v,v.beneficio());
 		 		}
-    		for(Map.Entry<Integer, Nodo> j : padre.entrySet()){
-    			System.out.println("k:"+j.getKey());
-    			System.out.println("v:"+j.getValue().id+"\n");
-    		}
-    		System.out.println("--------------------");
     	}
     }
-		return g;
+		return padre;
 	} // fin funcion Prim
 
 
@@ -342,6 +190,10 @@ public class PARP{
 		Grafo g_conexo = BFS(g);
 		
 		// Realizar Prim para conseguir arbol de mayor beneficio
-		Grafo g_conexo2 = Prim(g_conexo);
+		HashMap<Integer,Nodo> arbol = Prim(g_conexo);
+	  for(Map.Entry<Integer, Nodo> i : arbol.entrySet()){
+	  	System.out.println(i.getKey());
+	  	i.getValue().imprimir();
+	  }// fin for map
 	} // fin funcion main
 } // fin class PARP
