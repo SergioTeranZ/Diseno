@@ -209,13 +209,20 @@ public class PARP{
 
   public static int caminoMayorBeneficio(HashMap<Integer,Nodo> arbol,Grafo g){
   	int nodo = -1;
+  	int beneficio = -100000;
   	for( Map.Entry<Integer, Nodo> i : arbol.entrySet() ){
   		if (esHoja(arbol,i.getKey()) && beneficio < costoCamino(i,-1,arbol,g) ){
   			nodo = i.getKey();
+  			beneficio = costoCamino(i,-1,arbol,g);
   		}
   	}
   	return nodo;
   } // fin funcion caminoMayorBeneficio
+
+	public static HashMap<Integer,Nodo> Dijkstra(Grafo g){
+	HashMap<Integer,Nodo> camino =  new HashMap<Integer,Nodo>();
+	return camino;
+	}// fin funcion Dijsktra
 
 	public static void main(String[] args){
 		// Armar Grafo
@@ -225,13 +232,16 @@ public class PARP{
 		Grafo g_conexo = BFS(g);
 		
 		// Realizar Prim para conseguir arbol de mayor beneficio
-		HashMap<Integer,Nodo> arbol = Prim(g_conexo);
+		HashMap<Integer,Nodo> arbol_ida = Prim(g_conexo);
 		
 		//-Buscar camino en el arbol con mayor beneficio (Camino A)
-		int a = caminoMayorBeneficio(arbol,g_conexo);
-		System.out.println(a);
+		int a = caminoMayorBeneficio(arbol_ida,g_conexo);
+
 		//-Eleminar beneficios de camino A
-		//g.usarBeneficios();
+		g_conexo.usarBeneficiosArbol(a,arbol_ida,1);
 	  
+		//-Hacer Dijkstra desde la hoja seleccionada hasta d
+		HashMap<Integer,Nodo> arbol_regreso = Dijkstra(g_conexo);
+
 	} // fin funcion main
 } // fin class PARP
