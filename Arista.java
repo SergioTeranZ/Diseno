@@ -8,4 +8,10 @@ public class Arista {
         costo = c;
         beneficio = b;
     }
+
+    public void imprimir(){
+		System.out.println("         id_v:"+id_v);
+		System.out.println("            c:"+costo);
+		System.out.println("            b:"+beneficio);
+    }
 }

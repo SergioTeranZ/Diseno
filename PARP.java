@@ -1,16 +1,27 @@
 import java.io.*;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class PARP{
 	//-Armar Grafo
 	//	-Abrir archivo
-	// 	-Ver cuantos nodos hay
-	// 	-Crear nodos
-	//		-Poner id
-	//	-Agregar nodos al grafo
-	// 	-Crear aristas
-	//	-Agregar Aristas al nodo correspondiente
-	//-Verificar si es conexo
-	//-Buscar componente C tal que d pertenece C
+	// 	  -Ver cuantos nodos hay
+	// 	  -Crear nodos
+	//	  	-Poner id
+	//	  -Agregar nodos al grafo
+	// 	  -Crear aristas
+	//	    -Agregar Aristas al nodo correspondiente
+	//  -Cerrar archivo
+	//-Hacer BFS partiendo de d para hallar componente conexa
+	//  -creamos una cola Q
+	//  -agregamos origen a la cola Q
+	//  -marcamos origen como visitado
+	//  -mientras Q no este vacío:
+	//     -sacamos un elemento de la cola Q llamado v
+	//     -para cada vertice w adyacente a v en el Grafo: 
+	//       -si w no ah sido visitado:
+	//         -marcamos como visitado w
+	//         -insertamos w dentro de la cola Q
 	//-Realizar Prim para conseguir arbol de mayor beneficio
 	//-Buscar camino en el arbol con mayor beneficio (Camino A)
 	//-Eleminar beneficios de camino A
@@ -28,14 +39,12 @@ public class PARP{
 			archivo = new File (arch);
 			fr = new FileReader (archivo);
 			br = new BufferedReader(fr);
-
 			// Lectura del fichero
 			String linea;
 			while((linea=br.readLine())!=null){
 				// Ver cuantos nodos hay
 				if (linea.contains(":")){
-				
-				// Crear Nodos
+					// Crear Nodos
 					for (int i=1;i<Integer.parseInt(linea.split(":")[1].split(" ")[2])+1; i++){
 						// Poner id
 						Nodo n_i = new Nodo(i);
@@ -43,24 +52,21 @@ public class PARP{
 						g.agregar_nodo(n_i.id,n_i);
 					}
 				}else if (!(linea.contains("number"))){
-				// Crear Aristas
+					// Crear Aristas
 					int atr_0 = Integer.parseInt(linea.split(" ")[0]);
 					int atr_1 = Integer.parseInt(linea.split(" ")[1]);
 					int atr_2 = Integer.parseInt(linea.split(" ")[2]);
 					int atr_3 = Integer.parseInt(linea.split(" ")[3]);
-					//Arista a_i = new Arista(atr_1,atr_2,atr_3);
-					//System.out.println(g.nodos.get(atr_0).agregar_vecino);
+					// Agregar Aristas a nodos correspondientes
 					g.nodos.get(atr_0).agregar_vecino(atr_1,atr_2,atr_3);	
 					g.nodos.get(atr_1).agregar_vecino(atr_0,atr_2,atr_3);	
-				}
-			}
-		}
+				} // fin if contains number
+			} // fin while readline
+		} // fin try
 		catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			// En el finally cerramos el fichero, para asegurarnos
-			// que se cierra tanto si todo va bien como si salta 
-			// una excepcion.
+			// Cerrar archivo
 			try{                    
 				if( null != fr ){   
 					fr.close();     
@@ -72,9 +78,37 @@ public class PARP{
 		return g;
 	} // fin funcion ArmarGrafo
 
-	public static void main(String[] args){
 
+	public static void BFS(Grafo g){
+		// Creamos una cola Q
+		Queue<Nodo> q = new LinkedList<Nodo>();
+		// Agregamos origen a la cola Q
+		q.add(g.nodos.get(1));
+		// Marcamos origen como visitado
+		g.nodos.get(1).visitado = true;
+		// Mientras Q no este vacío:
+		while( q.size() != 0 ){	
+		// Sacamos un elemento de la cola Q llamado v
+			Nodo v = q.poll();
+			// Para cada vertice w adyacente a v en el Grafo:
+			for (Arista w : v.vecinos){
+				// Si w no ha sido visitado:
+				if( g.nodos.get(w.id_v).visitado != true ){
+					System.out.println(g.nodos.get(w.id_v).id);
+					// Marcamos como visitado w
+					g.nodos.get(w.id_v).visitado = true;
+					// Insertamos w dentro de la cola Q
+					q.add(g.nodos.get(w.id_v));
+				} // fin if
+			} // fin for aristas
+		} // fin while
+	} // fin funcion BFS
+
+	public static void main(String[] args){
+		// Armar Grafo
 		Grafo g = ArmarGrafo(args[0]);
-		g.imprimir();
+		// Hacer BFS partiendo de d para hallar componente conexa
+		BFS(g);
+		// g.imprimir();
 	} // fin funcion main
 } // fin class PARP

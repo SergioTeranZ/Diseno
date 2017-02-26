@@ -4,15 +4,22 @@ public class Nodo {
   public int id;
   public ArrayList<Arista> vecinos;
   public boolean par;
+  public boolean visitado;
   
   public Nodo(int n){
     id = n;
     vecinos = new ArrayList<>();
     par = true;
+    visitado = false;
   }
 
   public void imprimir(){
-    System.out.println("Nodo id:"+ id);
+    System.out.println("      id:"+ id);
+    System.out.println("  visita:"+ visitado);
+    System.out.println(" vecinos:");
+    for(Arista a_i : vecinos){
+      a_i.imprimir();
+    }    
   } 
 
   public void agregar_vecino(int n, int c, int b ) {

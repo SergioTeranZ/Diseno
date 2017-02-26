@@ -12,13 +12,8 @@ public class Grafo {
   	for (Map.Entry<Integer, Nodo> entry : nodos.entrySet()) {
     	int key = entry.getKey();
     	Nodo value = entry.getValue();
-    	System.out.println(key+":\n    id:"+value.id);
-    	System.out.println("    vecinos:");
-    	for(Arista a_i : value.vecinos){
-    		System.out.println("         id_v:"+a_i.id_v);
-    		System.out.println("            c:"+a_i.costo);
-    		System.out.println("            b:"+a_i.beneficio);
-    	}
+    	System.out.println("key:"+key);
+    	value.imprimir();
   	}
 	}
 }
