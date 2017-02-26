@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 public class PARP{
@@ -109,30 +110,29 @@ public class PARP{
 
   public static Grafo Prim(Grafo g){
       Grafo h = new Grafo();
-      Nodo aux= g.get(1);
-      Nodo i= Nodo(1);
+      Nodo aux = g.nodos.get(1);
+      Nodo i = new Nodo(1);
       g.agregar_nodo(1,i);
 
-      ArrayList<>() aristas;
-      Iterator <Arista> it = aux.vecinos.iterator();
+      ArrayList<Arista> aristas = new ArrayList<Arista>();
+      Iterator<Arista> it = aux.vecinos.iterator();
       while(it.hasNext()){
-          aristas.add(a);
+      		//System.out.println(it);
           Arista a = it.next();
+          a.imprimir();
+          aristas.add(a);
       }
-
-      Iterator it = map.keySet().iterator();
-      while(it.hasNext()){
-          Integer key = it.next();
-          System.out.println("Clave: " + key + " -> Valor: " + map.get(key));
-      }
+      h.imprimir();
+      return h;
   }
 
 	public static void main(String[] args){
 		// Armar Grafo
 		Grafo g = ArmarGrafo(args[0]);
-		g.imprimir();
+		// g.imprimir();
 		// Hacer BFS partiendo de d para hallar componente conexa
 		Grafo g_conexo = BFS(g);
+		Grafo g_conexo2 = Prim(g_conexo);
 		// Realizar Prim para conseguir arbol de mayor beneficio
 	} // fin funcion main
 } // fin class PARP
