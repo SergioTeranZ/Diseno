@@ -286,8 +286,8 @@ public class PARP{
 		for(Map.Entry<Integer, Nodo> vi : padre.entrySet()){
 		System.out.println("v:"+vi.getKey());
 		System.out.println("w:"+vi.getValue().id+"\n");
-
 		}
+		System.out.println("padre:"+padre);
 		return camino;
 	}// fin funcion Dijsktra
 
