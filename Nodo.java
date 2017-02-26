@@ -9,7 +9,6 @@ public class Nodo {
   public Nodo(int n){
     id = n;
     vecinos = new ArrayList<>();
-    par = true;
     visitado = false;
   }
 
@@ -20,14 +19,15 @@ public class Nodo {
     for(Arista a_i : vecinos){
       a_i.imprimir();
     }    
-  } 
+  }
 
-// viejo
-/*  public void agregar_vecino(int n, int c, int b ) {
+  public void agregar_vecino(int n, int c, int b ) {
     Arista a = new Arista(n,c,b);
     vecinos.add(a);
   }
-*/
+
+// Alicia
+/*
   public void agregar_vecino(int o,int n, int c, int b ) {
     Arista a = new Arista(o,n,c,b);
     vecinos.add(a);
@@ -35,5 +35,5 @@ public class Nodo {
 
   public void agregar_arista(Arista a){
     vecinos.add(a);  
-  }
+  }*/
 }
