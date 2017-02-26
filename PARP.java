@@ -208,16 +208,13 @@ public class PARP{
   	}	// fin funcion costoCamino
 
   public static int caminoMayorBeneficio(HashMap<Integer,Nodo> arbol,Grafo g){
-  	int beneficio = -1000000;
+  	int nodo = -1;
   	for( Map.Entry<Integer, Nodo> i : arbol.entrySet() ){
-  		if (esHoja(arbol,i.getKey())){
-  			if(beneficio < costoCamino(i,-1,arbol,g)){
-  				beneficio = costoCamino(i,-1,arbol,g);
-  			}
+  		if (esHoja(arbol,i.getKey()) && beneficio < costoCamino(i,-1,arbol,g) ){
+  			nodo = i.getKey();
   		}
   	}
-  	System.out.println(beneficio);
-  	return beneficio;
+  	return nodo;
   } // fin funcion caminoMayorBeneficio
 
 	public static void main(String[] args){
@@ -232,7 +229,9 @@ public class PARP{
 		
 		//-Buscar camino en el arbol con mayor beneficio (Camino A)
 		int a = caminoMayorBeneficio(arbol,g_conexo);
-
+		System.out.println(a);
+		//-Eleminar beneficios de camino A
+		//g.usarBeneficios();
 	  
 	} // fin funcion main
 } // fin class PARP
