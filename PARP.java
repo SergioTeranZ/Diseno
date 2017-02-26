@@ -25,7 +25,7 @@ public class PARP{
 	//-Realizar Prim para conseguir arbol de mayor beneficio
 	//-Buscar camino en el arbol con mayor beneficio (Camino A)
 	//-Eleminar beneficios de camino A
-	//-Realizar Prim para conseguir camino de regreso a d
+	//-Hacer Dijkstra desde la hoja seleccionada hasta d
 	//-Calcular Vo = Beneficio_A - Costo_B
 
 	public static Grafo ArmarGrafo(String arch){
@@ -79,7 +79,8 @@ public class PARP{
 	} // fin funcion ArmarGrafo
 
 
-	public static void BFS(Grafo g){
+	public static Grafo BFS(Grafo g){
+		Grafo g2 = new Grafo();
 		// Creamos una cola Q
 		Queue<Nodo> q = new LinkedList<Nodo>();
 		// Agregamos origen a la cola Q
@@ -90,11 +91,12 @@ public class PARP{
 		while( q.size() != 0 ){	
 		// Sacamos un elemento de la cola Q llamado v
 			Nodo v = q.poll();
+			// Agregamos el nodo al grafo conexo
+			g2.agregar_nodo(v.id,v);
 			// Para cada vertice w adyacente a v en el Grafo:
 			for (Arista w : v.vecinos){
 				// Si w no ha sido visitado:
 				if( g.nodos.get(w.id_v).visitado != true ){
-					System.out.println(g.nodos.get(w.id_v).id);
 					// Marcamos como visitado w
 					g.nodos.get(w.id_v).visitado = true;
 					// Insertamos w dentro de la cola Q
@@ -102,13 +104,17 @@ public class PARP{
 				} // fin if
 			} // fin for aristas
 		} // fin while
+		return g2;
 	} // fin funcion BFS
 
 	public static void main(String[] args){
 		// Armar Grafo
 		Grafo g = ArmarGrafo(args[0]);
 		// Hacer BFS partiendo de d para hallar componente conexa
-		BFS(g);
+		Grafo g_conexo = BFS(g);
+		g.imprimir();
+		System.out.println("-------------");
+		g_conexo.imprimir();
 		// g.imprimir();
 	} // fin funcion main
 } // fin class PARP
