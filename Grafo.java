@@ -41,11 +41,22 @@ public class Grafo {
     }
   }
 
+  public int valorArista(int id1, int id2){
+    int r = -10000000;
+    for (Map.Entry<Integer, Nodo> entry : nodos.entrySet()) {
+      for (Arista ai : entry.getValue().vecinos){
+        if(entry.getKey()==id1 && ai.id_v==id2 )
+          r = ai.beneficio();
+      }
+    }
+    return r;
+  }
+
   public void imprimir(){
     for (Map.Entry<Integer, Nodo> entry : nodos.entrySet()) {
     	int key = entry.getKey();
     	Nodo value = entry.getValue();
-    	System.out.println("key:"+key);
+    	//System.out.println("key:"+key);
     	value.imprimir();
   	}
 	}

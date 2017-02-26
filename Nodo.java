@@ -13,12 +13,12 @@ public class Nodo {
   }
 
   public void imprimir(){
-    System.out.println("      id:"+ id);
-    System.out.println("  visita:"+ visitado);
-    System.out.println(" vecinos:");
+    System.out.println("     id:"+ id);
+    System.out.println("vecinos:");
     for(Arista a_i : vecinos){
       a_i.imprimir();
-    }    
+    }
+    System.out.println();
   }
 
   public void agregar_vecino(int n, int c, int b ) {

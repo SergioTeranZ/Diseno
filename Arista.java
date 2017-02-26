@@ -27,7 +27,8 @@ public class Arista {
 
   public void imprimir(){
 	System.out.println("         id_v:"+id_v);
-	System.out.println("            c:"+costo);
-	System.out.println("            b:"+beneficio);
+	System.out.println("    beneficio:"+(beneficio-costo));	
+	//System.out.println("            c:"+costo);
+	//System.out.println("            b:"+beneficio);
   }
 }
