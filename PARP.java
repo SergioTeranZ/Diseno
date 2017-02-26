@@ -134,8 +134,6 @@ public class PARP{
 	} // fin funcion BFS
 
 	public static HashMap<Integer,Nodo> Prim(Grafo g){
-
-
   	HashMap<Integer,Integer> distancia = new HashMap<Integer,Integer>();
   	HashMap<Integer,Nodo> padre = new HashMap<Integer,Nodo>();
   	HashMap<Integer,Nodo> cola = new HashMap<Integer,Nodo>();
@@ -181,6 +179,46 @@ public class PARP{
 		return padre;
 	} // fin funcion Prim
 
+  public static boolean esHoja(HashMap<Integer,Nodo> g,int h){
+    boolean eshoja = true;
+    for( Map.Entry<Integer, Nodo> i : g.entrySet() ){
+    	if(i.getValue().id == h){
+    		eshoja = false;
+    	}
+    } // fin for map
+    return eshoja;
+  } // fin funcion esHoja
+
+  public static int costoCamino(Map.Entry<Integer, Nodo> i , int destino ,HashMap<Integer,Nodo> arbol , Grafo g){
+  	int c = 0;
+  	Nodo nodo_conteo = g.nodos.get(i.getValue().id);
+  	Nodo nodo_camino = g.nodos.get(i.getKey());
+
+  	while (nodo_camino.id != destino){
+  		nodo_conteo =  g.nodos.get(nodo_camino.id);
+	  	nodo_camino = arbol.get(nodo_conteo.id);
+
+	  	for(Arista ai : nodo_conteo.vecinos){
+	  		if (ai.id_v == nodo_camino.id){
+	  			c += ai.beneficio();
+	  		} // fin if
+	  	} // fin for
+  	} // fin while
+  	return c;
+  	}	// fin funcion costoCamino
+
+  public static int caminoMayorBeneficio(HashMap<Integer,Nodo> arbol,Grafo g){
+  	int beneficio = -1000000;
+  	for( Map.Entry<Integer, Nodo> i : arbol.entrySet() ){
+  		if (esHoja(arbol,i.getKey())){
+  			if(beneficio < costoCamino(i,-1,arbol,g)){
+  				beneficio = costoCamino(i,-1,arbol,g);
+  			}
+  		}
+  	}
+  	System.out.println(beneficio);
+  	return beneficio;
+  } // fin funcion caminoMayorBeneficio
 
 	public static void main(String[] args){
 		// Armar Grafo
@@ -191,9 +229,10 @@ public class PARP{
 		
 		// Realizar Prim para conseguir arbol de mayor beneficio
 		HashMap<Integer,Nodo> arbol = Prim(g_conexo);
-	  for(Map.Entry<Integer, Nodo> i : arbol.entrySet()){
-	  	System.out.println(i.getKey());
-	  	i.getValue().imprimir();
-	  }// fin for map
+		
+		//-Buscar camino en el arbol con mayor beneficio (Camino A)
+		int a = caminoMayorBeneficio(arbol,g_conexo);
+
+	  
 	} // fin funcion main
 } // fin class PARP

@@ -16,23 +16,6 @@ public class Grafo {
     }
   }
 
-  public void visitar(int id){
-    System.out.println("VISITE A --------------->"+nodos.get(id).id);
-    nodos.get(id).visitado = true;
-  }
-
-  public boolean sinVisitar(){
-    boolean faltan = false;
-    for (Map.Entry<Integer, Nodo> entry : nodos.entrySet()) {
-      int key = entry.getKey();
-      Nodo value = entry.getValue();
-      if (value.visitado == false) {
-        faltan = true;
-      }
-    }
-    return faltan;
-  }
-
   public void imprimir(){
     for (Map.Entry<Integer, Nodo> entry : nodos.entrySet()) {
     	int key = entry.getKey();
