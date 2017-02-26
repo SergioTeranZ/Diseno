@@ -46,17 +46,19 @@ public class PARP{
 	//-Eleminar beneficios de camino A
 	
 	//-Hacer Dijkstra desde la hoja seleccionada hasta d	
-	// 	creamos una cola de prioridad Q
-	// 	agregamos origen a la cola de prioridad Q
-	// 	mientras Q no este vacío:
-	// 		sacamos un elemento de la cola Q llamado u
-	// 		si u ya fue visitado:
-	//			continuo sacando elementos de Q    
-	// 		marcamos como visitado u
-	// 	para cada vértice v adyacente a u en el Grafo:
-	// 		sea w el peso entre vértices ( u , v )  
-	// 		si v no ah sido visitado:
-	// 		Relajacion( u , v , w )
+	// 	Inicialmente S contendrá el vértice origen
+	// 	Para cada v en el grafo: 
+	// 		si v no es el origen:
+	// 			Inicialmente, el predecesor de v en el camino mínimo construido hasta el momento es origen
+	// 	Mientras existan vértices para los cuales no se ha determinado el camino mínimo
+	//		Elegir un vértice w en (V-S) tal que su costo sea el mayor.
+	//		Se agrega w al conjunto S
+	//		Para cada v en (V-S):
+	//			Se escoge, entre 
+	//			el camino mayor hacia v que se tiene hasta el momento, 
+	//			y el camino hacia v pasando por w mediante su camino mayor, 
+	// 			el de mayor costo.
+	// 		Si max(D[v],D[w]+C[w,v]) = D[w]+C[w,v] entonces P[v] ← w 
 	
 	//-Calcular Vo = Beneficio_A - Costo_B
 
@@ -200,10 +202,10 @@ public class PARP{
     return eshoja;
   } // fin funcion esHoja
 
-  public static int costoCamino(Map.Entry<Integer, Nodo> i , int destino ,HashMap<Integer,Nodo> arbol , Grafo g){
+  public static int costoCamino(int id,int key , int destino ,HashMap<Integer,Nodo> arbol , Grafo g){
   	int c = 0;
-  	Nodo nodo_conteo = g.nodos.get(i.getValue().id);
-  	Nodo nodo_camino = g.nodos.get(i.getKey());
+  	Nodo nodo_conteo = g.nodos.get(id);
+  	Nodo nodo_camino = g.nodos.get(key);
 
   	while (nodo_camino.id != destino){
   		nodo_conteo =  g.nodos.get(nodo_camino.id);
@@ -222,76 +224,110 @@ public class PARP{
   	int nodo = -1;
   	int beneficio = -100000;
   	for( Map.Entry<Integer, Nodo> i : arbol.entrySet() ){
-  		if (esHoja(arbol,i.getKey()) && beneficio < costoCamino(i,-1,arbol,g) ){
+  		if (esHoja(arbol,i.getKey()) && beneficio < costoCamino(i.getValue().id,i.getKey(),-1,arbol,g) ){
   			nodo = i.getKey();
-  			beneficio = costoCamino(i,-1,arbol,g);
+  			beneficio = costoCamino(i.getValue().id,i.getKey(),-1,arbol,g);
   		}
   	}
   	return nodo;
   } // fin funcion caminoMayorBeneficio
 
+  // ESTE DIJKSTRA FUNCIONA A MEDIAS
 	public static HashMap<Integer,Nodo> Dijkstra(Grafo g,int origen){
-		HashMap<Integer,Nodo> camino =  new HashMap<Integer,Nodo>();
-		// S ← {vinicial} //Inicialmente S contendrá el vértice //origen
+		// Inicialmente S contendrá el vértice origen
 		ArrayList<Integer> s = new ArrayList<Integer>();
   	HashMap<Integer,Integer> costo = new HashMap<Integer,Integer>();
   	HashMap<Integer,Nodo> padre = new HashMap<Integer,Nodo>();
 		s.add(origen);
 		costo.put(origen,-100000000);	
-		// Para cada v∈V, 
+		// Para cada v en el grafo: 
 		for( Map.Entry<Integer, Nodo> v : g.nodos.entrySet() ){
-			// v ≠ vinicial, hacer
+			// si v no es el origen:
 			if( v.getKey() != origen ){
-				//Inicialmente el costo del camino mínimo de vinicial a v es lo contenido en la matriz de costos
-				// D[v] ← C[vinicial, v] 
 				costo.put(v.getKey(),g.valorArista(v.getKey(),origen));
-				// P[v] ← vinicial //Inicialmente, el predecesor de v en el camino mínimo construido hasta el momento es vinicial
+				// Inicialmente, el predecesor de v en el camino mínimo construido hasta el momento es origen
 				padre.put(v.getKey(),g.nodos.get(origen));
 			} // fin if
 		} // fin for
 
-		// Mientras (V – S ≠ ∅) hacer //Mientras existan vértices para //los cuales no se ha determinado el //camino mínimo
+		// Mientras existan vértices para los cuales no se ha determinado el camino mínimo
 		while( g.nodos.size() - s.size() > 0 ){
-			//	3.1. Elegir un vértice w∈(V-S) tal que D[w] sea el mínimo.
+			//	Elegir un vértice w en (V-S) tal que su costo sea el mayor.
 			for(Map.Entry<Integer, Nodo> w : g.nodos.entrySet()){
-				int mayor = -100000;
-				System.out.println("("+w.getKey()+":"+w.getValue()+")");
+				int mayor = -10000000;
 				if(!s.contains(w.getKey())){
 					if( mayor < costo.get(w.getKey()) ){
-						// S ← S ∪ {w} //Se agrega w al conjunto S, pues ya se //tiene el camino mínimo hacia w 
+						// Se agrega w al conjunto S
 						s.add(w.getKey());
 						mayor = costo.get(w.getKey());
 					} // fin if mayor
 				} // fin if contains
 					
-					//	Para cada v∈(V-S) hacer:
+					//	Para cada v en (V-S):
 					for(Map.Entry<Integer, Nodo> v : g.nodos.entrySet()){
 						if(!s.contains(v.getKey())){
-							//	D[v] ← max(D[v],D[w]+C[w,v]) //Se escoge, entre //el camino mínimo hacia v que se tiene //hasta el momento, y el camino hacia v //pasando por w mediante su camino mínimo, //el de menor costo.
+							// Se escoge, entre 
+							// el camino mayor hacia v que se tiene hasta el momento, 
 							int dv = costo.get(v.getKey());
 							int dw = costo.get(w.getKey());
+							//y el camino hacia v pasando por w mediante su camino mayor, 
 							int cwv = g.valorArista(w.getKey(),v.getKey());
+							//el de mayor costo.
 							int max = Math.max( dv , dw + cwv );
 							costo.put(v.getKey(),max);	
 
-							// Si max(D[v],D[w]+C[w,v]) = D[w]+C[w,v] entonces P[v] ← w //Si se escoge ir por w entonces //el predecesor de v por el momento es w
-							if( max == (costo.get(w.getKey()) + g.valorArista(w.getKey(),v.getKey())) ){
+							// Si max(D[v],D[w]+C[w,v]) = D[w]+C[w,v] entonces P[v] ← w 
+							if( max == dw + cwv ){
 								padre.put(v.getKey(),w.getValue());
 							}
 						} // fin if contains
 					} // fin for map
 			} //fin for map
-				
-		} // while
-		for(Map.Entry<Integer, Nodo> vi : padre.entrySet()){
-		System.out.println("v:"+vi.getKey());
-		System.out.println("w:"+vi.getValue().id+"\n");
-		}
-		System.out.println("padre:"+padre);
-		return camino;
+		} // fin while
+		return padre;
 	}// fin funcion Dijsktra
 
+	//PROBADNO DE NUEVO DIJKSTRA
+/*	public static HashMap<Integer,Nodo> Dijkstra2(Grafo g ,int origen){
+		//Initialize:	F(1)=0
+  	HashMap<Integer,Integer> cola = new HashMap<Integer,Integer>();
+  	cola.put(origen,0);
+		//F(j) = infinity, j=2,...,n
+  	for(int i=1 ; i < g.nodos.size()+1;i++){
+  		System.out.println(i);
+  		if (i != origen)
+  			cola.put(i,-10000000);
+  	}
 
+  	HashMap<Integer,Nodo> u = new HashMap<Integer,Nodo>();
+		//U={1}
+		u.put(origen,g.nodos.get(origen));
+		//Iterate:	While (U != {}) Do:
+		int j = -200000000;
+		while (!u.isEmpty()){
+			// j = arg min{F(i): i in U} 
+			for(Map.Entry<Integer, Integer> i : cola.entrySet()){
+				if(u.containsKey(i.getKey())){
+					if(j <= cola.get(i.getKey()))
+						j = i.getKey();
+				}
+			}
+			System.out.println(u);
+			// U = U\{j}
+			u.remove(j);
+			// For (k in S(j)) Do:
+			for(  ){	
+				//       G = min{F(k),D(j,k) + F(j)}
+				//       if(G < F(k)) then {F(k) = G; 
+				//			 U = U \/ {k}}
+				//     End Do.
+			}
+			
+		//End Do.
+		}
+		return u;
+	}
+*/
 	public static void main(String[] args){
 		// Armar Grafo
 		Grafo g = ArmarGrafo(args[0]);
@@ -304,12 +340,16 @@ public class PARP{
 		
 		//-Buscar camino en el arbol con mayor beneficio (Camino A)
 		int a = caminoMayorBeneficio(arbol_ida,g_conexo);
+		int ca = costoCamino(arbol_ida.get(a).id,a,-1,arbol_ida,g_conexo);
 
 		//-Eleminar beneficios de camino A
 		g_conexo.usarBeneficiosArbol(a,arbol_ida,1);
 	 
 		//-Hacer Dijkstra desde la hoja seleccionada hasta d
 		HashMap<Integer,Nodo> arbol_regreso = Dijkstra(g_conexo,a);
-
+		//System.out.println(arbol_regreso);
+		
+		int cb = costoCamino(arbol_regreso.get(1).id,1,a,arbol_regreso,g_conexo);
+		System.out.println("Costo total de recorrido: "+ (ca+cb));
 	} // fin funcion main
 } // fin class PARP
